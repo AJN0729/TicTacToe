@@ -77,6 +77,19 @@ struct Home: View {
             checkWinner()
         })
         
+        .alert(isPresented: $gameOver, content: {
+            
+            Alert(title: Text("Check it Out"), message: Text(msg), dismissButton:
+                    .destructive(Text("play Again"), action: {
+                        
+                        withAnimation(Animation.easeIn(duration: 0.5)) {
+                            moves.removeAll()
+                            moves = Array(repeating: "", count: 9)
+                            isPlaying = true
+                        }
+                }))
+        })
+        
     }
     func getWidth() -> CGFloat {
         let width = UIScreen.main.bounds.width - (30 + 30)
@@ -98,6 +111,17 @@ func checkWinner() {
     else if checkMoves(player: "O") {
         msg = "Player O Won!!!"
         gameOver.toggle()
+        } else {
+            let status = moves.contains { (value) -> Bool in
+            
+            return value == ""
+            
+        }
+        if !status {
+            
+            msg = "Game Over Tied!!!"
+            gameOver.toggle()
+        }
     }
 }
 
@@ -106,6 +130,7 @@ func checkWinner() {
 
 func checkMoves(player: String) -> Bool {
     
+    //Horizontal Moves
     for contestant in stride(from: 0, to: 9, by: 3) {
         if moves[contestant] == player &&
         moves[contestant+1] == player &&
@@ -116,11 +141,29 @@ func checkMoves(player: String) -> Bool {
         
     }
     
-    return false
-}
-
-
-}
+    //Vertical moves
+for contestant in 0...2 {
+        if moves[contestant] == player &&
+            moves[contestant+3] == player &&
+            moves[contestant+6] == player {
+            
+            return true
+        }
+    }
+    
+    //Diagonal
+if moves[0] == player && moves [4] == player && moves [8] == player {
+        return true
+            }
+            if moves [2] == player && moves [4] == player && moves [6] == player {
+                return true
+            }
+    
+    
+        return false
+            
+        }
+    }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
